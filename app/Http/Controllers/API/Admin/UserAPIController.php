@@ -128,4 +128,37 @@ class UserAPIController extends AppBaseController
 
         return $this->sendSuccess('User deleted successfully');
     }
+
+    public function AddFavorit(Request $request){
+        $user = \Auth::user();
+        $companyId = $request->companyId;
+
+        Favorit::create(['user_id' => $user->id,'company_id' => $companyId]);
+
+        return $this->sendSuccess('Favorit Company mark successfully');
+    }
+
+    public function DeleteFavorit(Request $request){
+        $user = \Auth::user();
+        $companyId = $request->companyId;
+        $favorit = Favorit::where('company_id',$companyId)->first();
+        $favorit->delete();
+
+        return $this->sendSuccess('Favorit Company unmark successfully');
+    }
+
+    public function ListFavorit(Request $request){
+        $user = \Auth::user();
+        $favorit = Favorit::where('user_id',$user->id)->get();
+
+        return $this->sendResponse($favorit->toArray(), 'Favorit company retrieved successfully');
+    }
+
+    public function SearchCompany(Request $request){
+        $user = \Auth::user();
+        $name = $request->name;
+        $company = Company::where('name',$name)->get();
+
+        return $this->sendResponse($company->toArray(), 'Company retrieved successfully');
+    }
 }

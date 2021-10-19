@@ -39,3 +39,12 @@ Route::resource('companies', 'Admin\CompanyAPIController');
 
 Route::resource('favorits', 'Admin\FavoritAPIController');
 
+Route::post('/mark-company', 'Admin\UserAPIController@AddFavorit');
+
+Route::post('/unmark-company', 'Admin\UserAPIController@DeleteFavorit');
+
+Route::get('/list-favorit', 'Admin\UserAPIController@ListFavorit');
+
+Route::post('/search-company', 'Admin\UserAPIController@SearchCompany');
+
+
