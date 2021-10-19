@@ -1,0 +1,56 @@
+stages:
+   - build
+   - test 
+   - deploy
+
+# build stage
+build_app:
+   image: node:alpine
+   stage: build
+   only:
+      - master
+   script:
+      - composer -v
+      - echo "Ready to Deploy"
+
+testing:
+  stage: test
+  script:
+    - echo "Unit test"
+
+# development stage
+development:
+   stage: deploy
+   before_script:
+      - echo "Before script"
+      - mkdir -p ~/.ssh
+      - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+      - cd /data/wwwroot/partner-pre.pedulisehat.id/ #your project path
+   script:
+      - git pull origin master
+      - php artisan config:cache
+      - php artisan config:clear
+      - echo "Deployed"
+   environment: staging
+   only:
+      - master
+
+# production stage
+production:
+   stage: deploy
+   before_script:
+      - echo "Before script"
+      - mkdir -p ~/.ssh
+      - echo -e "$SSH_PRIVATE_KEY_LIVE" > ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+      - cd /data/wwwroot/partner.pedulisehat.id/ #your project path
+   script:
+      - git pull origin master
+      - php artisan config:cache
+      - php artisan config:clear
+      - echo "Deployed"
+   environment: production
+   when: manual   
+   only:
+      - master      
