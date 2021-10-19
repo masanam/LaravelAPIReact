@@ -19,16 +19,23 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::group(['prefix' => 'admin'], function () {
-    Route::resource('users', App\Http\Controllers\API\Admin\UserAPIController::class);
-});
+// Route::group(['prefix' => 'admin'], function () {
+//     Route::resource('users', App\Http\Controllers\API\Admin\UserAPIController::class);
+// });
 
 
-Route::group(['prefix' => 'admin'], function () {
-    Route::resource('companies', App\Http\Controllers\API\Admin\CompanyAPIController::class);
-});
+// Route::group(['prefix' => 'admin'], function () {
+//     Route::resource('companies', App\Http\Controllers\API\Admin\CompanyAPIController::class);
+// });
 
 
-Route::group(['prefix' => 'admin'], function () {
-    Route::resource('favorits', App\Http\Controllers\API\Admin\FavoritAPIController::class);
-});
+// Route::group(['prefix' => 'admin'], function () {
+//     Route::resource('favorits', App\Http\Controllers\API\Admin\FavoritAPIController::class);
+// });
+
+Route::resource('users', 'Admin\UserAPIController');
+
+Route::resource('companies', 'Admin\CompanyAPIController');
+
+Route::resource('favorits', 'Admin\FavoritAPIController');
+
