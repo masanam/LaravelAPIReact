@@ -39,6 +39,12 @@ Route::resource('companies', 'Admin\CompanyAPIController');
 
 Route::resource('favorits', 'Admin\FavoritAPIController');
 
+Route::post("user-signup", "Admin\UserAPIController@userSignUp");
+
+Route::post("user-login", "Admin\UserAPIController@userLogin");
+
+Route::get("user/{email}", "Admin\UserAPIController@userDetail");
+
 Route::post('/mark-company', 'Admin\UserAPIController@AddFavorit');
 
 Route::post('/unmark-company', 'Admin\UserAPIController@DeleteFavorit');
