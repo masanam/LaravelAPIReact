@@ -36,8 +36,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'users', 'middleware' => 'CORS'], function ($router) {
     Route::post('/register', 'Admin\UserAPIController@register')->name('register.user');
     Route::post('/login', 'Admin\UserAPIController@login')->name('login.user');
+    Route::post('/mark-company', 'Admin\UserAPIController@AddFavorit');
+    Route::post('/unmark-company', 'Admin\UserAPIController@DeleteFavorit');
+    Route::get('/list-favorit', 'Admin\UserAPIController@ListFavorit');
     Route::get('/view-profile', 'Admin\UserAPIController@viewProfile')->name('profile.user');
     Route::get('/logout', 'Admin\UserAPIController@logout')->name('logout.user');
+    Route::post('/search-company', 'Admin\UserAPIController@SearchCompany');
+
     });
 
 // Route::resource('users', 'Admin\UserAPIController');
@@ -46,18 +51,11 @@ Route::resource('companies', 'Admin\CompanyAPIController');
 
 Route::resource('favorits', 'Admin\FavoritAPIController');
 
-Route::post("user-signup", "Admin\UserAPIController@userSignUp");
+// Route::post("user-signup", "Admin\UserAPIController@userSignUp");
 
-Route::post("user-login", "Admin\UserAPIController@userLogin");
+// Route::post("user-login", "Admin\UserAPIController@userLogin");
 
-Route::get("user/{email}", "Admin\UserAPIController@userDetail");
+// Route::get("user/{email}", "Admin\UserAPIController@userDetail");
 
-Route::post('/mark-company', 'Admin\UserAPIController@AddFavorit');
-
-Route::post('/unmark-company', 'Admin\UserAPIController@DeleteFavorit');
-
-Route::get('/list-favorit', 'Admin\UserAPIController@ListFavorit');
-
-Route::post('/search-company', 'Admin\UserAPIController@SearchCompany');
 
 
