@@ -234,30 +234,44 @@ class UserAPIController extends AppBaseController
         
 
     public function AddFavorit(Request $request){
+        $responseMessage = "Favorit Company mark successfully";
         $user = Auth::guard("api")->user();
         $companyId  = $request->companyId;
 
         Favorit::create(['user_id' => $user->id,'company_id' => $companyId]);
 
-        return $this->sendSuccess('Favorit Company mark successfully');
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage
+            ], 200);
     }
 
     public function DeleteFavorit(Request $request){
+        $responseMessage = "Favorit Company unmark successfully";
         $user = Auth::guard("api")->user();
         $companyId  = $request->companyId;
         $favorit    = Favorit::where('company_id',$companyId)->first();
         $favorit->delete();
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage
+            ], 200);
 
-        return $this->sendSuccess('Favorit Company unmark successfully');
     }
 
 
     public function SearchCompany(Request $request){
+        $responseMessage = "Company retrieved successfully";
         $user = Auth::guard("api")->user();
         $name       = $request->name;
         $company    = Company::where('name',$name)->get();
 
-        return $this->sendResponse($company->toArray(), 'Company retrieved successfully');
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage,
+            "data" => $company
+            ], 200);
+    
     }
 
     
