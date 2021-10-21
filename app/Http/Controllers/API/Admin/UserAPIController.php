@@ -6,6 +6,7 @@ use App\Http\Requests\API\Admin\CreateUserAPIRequest;
 use App\Http\Requests\API\Admin\UpdateUserAPIRequest;
 use App\Models\Admin\User;
 use App\Models\Admin\Favorit;
+use App\Models\Admin\Company;
 use Illuminate\Support\Facades\Hash;
 
 use App\Repositories\Admin\UserRepository;
