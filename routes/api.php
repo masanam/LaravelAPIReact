@@ -33,7 +33,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     Route::resource('favorits', App\Http\Controllers\API\Admin\FavoritAPIController::class);
 // });
 
-Route::resource('users', 'Admin\UserAPIController');
+Route::group(['prefix' => 'users', 'middleware' => 'CORS'], function ($router) {
+    Route::post('/register', 'Admin\UserAPIController@register')->name('register.user');
+    Route::post('/login', 'Admin\UserAPIController@login')->name('login.user');
+    Route::get('/view-profile', 'Admin\UserAPIController@viewProfile')->name('profile.user');
+    Route::get('/logout', 'Admin\UserAPIController@logout')->name('logout.user');
+    });
+
+// Route::resource('users', 'Admin\UserAPIController');
 
 Route::resource('companies', 'Admin\CompanyAPIController');
 

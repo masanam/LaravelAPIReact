@@ -5,11 +5,15 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Requests\API\Admin\CreateUserAPIRequest;
 use App\Http\Requests\API\Admin\UpdateUserAPIRequest;
 use App\Models\Admin\User;
+use App\Models\Admin\Favorit;
+use Illuminate\Support\Facades\Hash;
+
 use App\Repositories\Admin\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
-
+use Auth;
+use Validator;
 /**
  * Class UserController
  * @package App\Http\Controllers\API\Admin
@@ -24,6 +28,8 @@ class UserAPIController extends AppBaseController
     public function __construct(UserRepository $userRepo)
     {
         $this->userRepository = $userRepo;
+        $this->middleware("auth:api",["except" => ["login","register"]]);
+        $this->user = new User;
     }
 
     /**
@@ -131,6 +137,87 @@ class UserAPIController extends AppBaseController
     }
 
 
+    public function register(Request $request){
+        $validator = Validator::make($request->all(),[
+        'name' => 'required|string',
+        'email' => 'required|string|unique:users',
+        'password' => 'required|min:6|confirmed',
+        ]);
+
+        if($validator->fails()){
+        return response()->json([
+        'success' => false,
+        'message' => $validator->messages()->toArray()
+        ], 500);
+        }
+        
+        $data = [
+        "name" => $request->name,
+        "email" => $request->email,
+        "password" => Hash::make($request->password)
+        ];$this->user->create($data);$responseMessage = "Registration Successful";return response()->json([
+        'success' => true,
+        'message' => $responseMessage
+        ], 200);
+    }
+        
+    public function login(Request $request){
+        $validator = Validator::make($request->all(),[
+        'email' => 'required|string',
+        'password' => 'required|min:6',
+        ]);if($validator->fails()){
+        return response()->json([
+        'success' => false,
+        'message' => $validator->messages()->toArray()
+        ], 500);
+
+        }$credentials = $request->only(["email","password"]);
+        $user = User::where('email',$credentials['email'])->first();
+    
+        if($user){
+            if(!auth()->attempt($credentials)){
+            $responseMessage = "Invalid username or password";
+            return response()->json([
+            "success" => false,
+            "message" => $responseMessage,
+            "error" => $responseMessage
+            ], 422);
+        }
+        $accessToken = auth()->user()->createToken('authToken')->accessToken;
+        $responseMessage = "Login Successful";
+        return $this->respondWithToken($accessToken,$responseMessage,auth()->user());
+        
+        }else{
+            $responseMessage = "Sorry, this user does not exist";
+            return response()->json([
+            "success" => false,
+            "message" => $responseMessage,
+            "error" => $responseMessage
+            ], 422);
+        }
+        }
+        
+        public function viewProfile(){
+        $responseMessage = "user profile";
+        $data = Auth::guard("api")->user();
+        return response()->json([
+        "success" => true,
+        "message" => $responseMessage,
+        "data" => $data
+        ], 200);
+        }
+        
+        public function logout(){
+        $user = Auth::guard("api")->user()->token();
+        $user->revoke();
+        $responseMessage = "successfully logged out";
+        return response()->json([
+        'success' => true,
+        'message' => $responseMessage
+        ], 200);
+        }
+        
+
     public function AddFavorit(Request $request){
         $user       = \Auth::user();
         $companyId  = $request->companyId;
@@ -150,6 +237,7 @@ class UserAPIController extends AppBaseController
     }
 
     public function ListFavorit(Request $request){
+        dd($request);
         $user       = \Auth::user();
         $favorit    = Favorit::where('user_id',$user->id)->get();
 
