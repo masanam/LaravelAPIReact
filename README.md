@@ -10,7 +10,17 @@ Following things are ready to be used directly with AdminLTE Theme.
 - Forgot Password
 - Password Reset
 - Home Layout with Sidebar
+- 
+# Laravel API Backend
 
+Feature :
+1. Register\
+2. Login\
+3. Add Company\
+4. List Company\
+5. Mark as Favourite\
+6. UnMark as Favourite\
+7. List Favourite\
 ## Packages Installed
 
 - InfyOm Laravel Generator
