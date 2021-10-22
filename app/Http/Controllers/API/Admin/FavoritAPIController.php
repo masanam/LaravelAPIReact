@@ -143,11 +143,9 @@ class FavoritAPIController extends AppBaseController
             ], 200);
     }
 
-    public function AddFavorit(Request $request){
+    public function AddFavorit($companyId){
         $responseMessage = "Favorit Company mark successfully";
         $user = Auth::guard("api")->user();
-        $companyId  = $request->companyId;
-
         Favorit::create(['user_id' => $user->id,'company_id' => $companyId]);
 
         return response()->json([
@@ -156,12 +154,12 @@ class FavoritAPIController extends AppBaseController
             ], 200);
     }
 
-    public function DeleteFavorit(Request $request){
+    public function DeleteFavorit($companyId){
         $responseMessage = "Favorit Company unmark successfully";
         $user = Auth::guard("api")->user();
-        $companyId  = $request->companyId;
-        $favorit    = Favorit::where('company_id',$companyId)->first();
+        $favorit=Favorit::findOrFail($companyId);
         $favorit->delete();
+
         return response()->json([
             "success" => true,
             "message" => $responseMessage

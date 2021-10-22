@@ -31,6 +31,7 @@ class Company extends Model
 
 
     public $fillable = [
+        'name',
         'address',
         'phone'
     ];
@@ -42,6 +43,7 @@ class Company extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'name' => 'string',
         'address' => 'string',
         'phone' => 'string'
     ];

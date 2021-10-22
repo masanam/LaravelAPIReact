@@ -130,6 +130,32 @@ class CompanyAPIController extends AppBaseController
         return $this->sendSuccess('Company deleted successfully');
     }
 
+
+    public function addCompany(Request $request){
+        $responseMessage = "Company Added successfully";
+        $user = Auth::guard("api")->user();
+        $input = $request->all();
+        $company = Company::create($input);
+
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage,
+            "data" => $company
+            ], 200);
+    }
+
+    public function detailCompany($id){
+        $responseMessage = "Company retrieved successfully";
+        $user = Auth::guard("api")->user();
+        $company    = Company::where('id',$id)->get();
+
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage,
+            "data" => $company
+            ], 200);
+    }
+
     public function SearchCompany(Request $request){
         $responseMessage = "Company retrieved successfully";
         $user = Auth::guard("api")->user();
