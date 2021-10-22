@@ -36,12 +36,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'users', 'middleware' => 'CORS'], function ($router) {
     Route::post('/register', 'Admin\UserAPIController@register')->name('register.user');
     Route::post('/login', 'Admin\UserAPIController@login')->name('login.user');
-    Route::post('/mark-company', 'Admin\UserAPIController@AddFavorit');
-    Route::post('/unmark-company', 'Admin\UserAPIController@DeleteFavorit');
-    Route::get('/list-favorit', 'Admin\UserAPIController@ListFavorit');
     Route::get('/view-profile', 'Admin\UserAPIController@viewProfile')->name('profile.user');
     Route::get('/logout', 'Admin\UserAPIController@logout')->name('logout.user');
-    Route::post('/search-company', 'Admin\UserAPIController@SearchCompany');
+
+    Route::post('/mark-company', 'Admin\FavoritAPIController@AddFavorit');
+    Route::post('/unmark-company', 'Admin\FavoritAPIController@DeleteFavorit');
+    Route::get('/list-favorit', 'Admin\FavoritAPIController@ListFavorit');
+
+    Route::post('/search-company', 'Admin\CompanyAPIController@SearchCompany');
+    Route::post('/add-company', 'Admin\CompanyAPIController@AddCompany');
+    Route::get('/list-company', 'Admin\CompanyAPIController@listCompany');
+
 
     });
 

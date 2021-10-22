@@ -9,6 +9,7 @@ use App\Repositories\Admin\CompanyRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Auth;
 
 /**
  * Class CompanyController
@@ -128,4 +129,29 @@ class CompanyAPIController extends AppBaseController
 
         return $this->sendSuccess('Company deleted successfully');
     }
+
+    public function SearchCompany(Request $request){
+        $responseMessage = "Company retrieved successfully";
+        $user = Auth::guard("api")->user();
+        $name       = $request->name;
+        $company    = Company::where('name',$name)->get();
+
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage,
+            "data" => $company
+            ], 200);
+    }
+
+    public function listCompany(){
+        $responseMessage = "Company retrieved successfully";
+        $company    = Company::get();
+
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage,
+            "data" => $company
+            ], 200);
+    }
+
 }

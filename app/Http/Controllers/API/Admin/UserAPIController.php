@@ -146,33 +146,40 @@ class UserAPIController extends AppBaseController
         ]);
 
         if($validator->fails()){
-        return response()->json([
-        'success' => false,
-        'message' => $validator->messages()->toArray()
-        ], 500);
+            return response()->json([
+            'success' => false,
+            'message' => $validator->messages()->toArray()
+            ], 500);
         }
         
         $data = [
         "name" => $request->name,
         "email" => $request->email,
         "password" => Hash::make($request->password)
-        ];$this->user->create($data);$responseMessage = "Registration Successful";return response()->json([
-        'success' => true,
-        'message' => $responseMessage
-        ], 200);
+        ];
+
+        $this->user->create($data);
+            $responseMessage = "Registration Successful";
+            return response()->json([
+            'success' => true,
+            'message' => $responseMessage
+            ], 200);
     }
         
     public function login(Request $request){
         $validator = Validator::make($request->all(),[
         'email' => 'required|string',
         'password' => 'required|min:6',
-        ]);if($validator->fails()){
-        return response()->json([
-        'success' => false,
-        'message' => $validator->messages()->toArray()
-        ], 500);
-
-        }$credentials = $request->only(["email","password"]);
+        ]);
+        
+        if($validator->fails()){
+            return response()->json([
+            'success' => false,
+            'message' => $validator->messages()->toArray()
+            ], 500);
+        }
+        
+        $credentials = $request->only(["email","password"]);
         $user = User::where('email',$credentials['email'])->first();
     
         if($user){
@@ -212,14 +219,13 @@ class UserAPIController extends AppBaseController
             // $user       = \Auth::user();
             $responseMessage = "Favorit company retrieved successfully";
             $user = Auth::guard("api")->user();
-            $favorit    = Favorit::where('user_id',$user->id)->get();
+            $favorit    = Favorit::with('company')->where('user_id',$user->id)->get();
     
             return response()->json([
                 "success" => true,
                 "message" => $responseMessage,
                 "data" => $favorit
                 ], 200);
-        
         }
 
         
@@ -275,89 +281,4 @@ class UserAPIController extends AppBaseController
     
     }
 
-    
-    // public function userSignUp(Request $request) {
-    //     $validator              =        Validator::make($request->all(), [
-    //         "name"              =>          "required",
-    //         "email"             =>          "required|email",
-    //         "password"          =>          "required",
-    //         "phone"             =>          "required"
-    //     ]);
-
-    //     if($validator->fails()) {
-    //         return response()->json(["status" => "failed", "message" => "validation_error", "errors" => $validator->errors()]);
-    //     }
-
-    //     $userDataArray          =       array(
-    //         "name"               =>          $request->name,
-    //         "email"              =>          $request->email,
-    //         "password"           =>          md5($request->password),
-    //         "phone"              =>          $request->phone
-    //     );
-
-    //     $user_status            =           User::where("email", $request->email)->first();
-
-    //     if(!is_null($user_status)) {
-    //        return response()->json(["status" => "failed", "success" => false, "message" => "Whoops! email already registered"]);
-    //     }
-
-    //     $user                   =           User::create($userDataArray);
-
-    //     if(!is_null($user)) {
-    //         return response()->json(["status" => $this->status_code, "success" => true, "message" => "Registration completed successfully", "data" => $user]);
-    //     }
-
-    //     else {
-    //         return response()->json(["status" => "failed", "success" => false, "message" => "failed to register"]);
-    //     }
-    // }
-
-
-    // public function userLogin(Request $request) {
-
-    //     $validator          =       Validator::make($request->all(),
-    //         [
-    //             "email"             =>          "required|email",
-    //             "password"          =>          "required"
-    //         ]
-    //     );
-
-    //     if($validator->fails()) {
-    //         return response()->json(["status" => "failed", "validation_error" => $validator->errors()]);
-    //     }
-
-
-    //     // check if entered email exists in db
-    //     $email_status       =       User::where("email", $request->email)->first();
-
-
-    //     // if email exists then we will check password for the same email
-
-    //     if(!is_null($email_status)) {
-    //         $password_status    =   User::where("email", $request->email)->where("password", md5($request->password))->first();
-
-    //         // if password is correct
-    //         if(!is_null($password_status)) {
-    //             $user           =       $this->userDetail($request->email);
-
-    //             return response()->json(["status" => $this->status_code, "success" => true, "message" => "You have logged in successfully", "data" => $user]);
-    //         }
-
-    //         else {
-    //             return response()->json(["status" => "failed", "success" => false, "message" => "Unable to login. Incorrect password."]);
-    //         }
-    //     }
-
-    //     else {
-    //         return response()->json(["status" => "failed", "success" => false, "message" => "Unable to login. Email doesn't exist."]);
-    //     }
-    // }
-
-    // public function userDetail($email) {
-    //     $user               =       array();
-    //     if($email != "") {
-    //         $user           =       User::where("email", $email)->first();
-    //         return $user;
-    //     }
-    // }
 }

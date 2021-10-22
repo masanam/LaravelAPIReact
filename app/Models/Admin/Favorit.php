@@ -59,5 +59,8 @@ class Favorit extends Model
         'deleted_at' => 'nullable'
     ];
 
-    
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Admin\Company','company_id');
+    }
 }

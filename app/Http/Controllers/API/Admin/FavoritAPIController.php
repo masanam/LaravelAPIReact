@@ -9,6 +9,7 @@ use App\Repositories\Admin\FavoritRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Auth;
 
 /**
  * Class FavoritController
@@ -127,5 +128,44 @@ class FavoritAPIController extends AppBaseController
         $favorit->delete();
 
         return $this->sendSuccess('Favorit deleted successfully');
+    }
+
+    public function ListFavorit(){
+        // $user       = \Auth::user();
+        $responseMessage = "Favorit company retrieved successfully";
+        $user = Auth::guard("api")->user();
+        $favorit    = Favorit::with('company')->where('user_id',$user->id)->get();
+
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage,
+            "data" => $favorit
+            ], 200);
+    }
+
+    public function AddFavorit(Request $request){
+        $responseMessage = "Favorit Company mark successfully";
+        $user = Auth::guard("api")->user();
+        $companyId  = $request->companyId;
+
+        Favorit::create(['user_id' => $user->id,'company_id' => $companyId]);
+
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage
+            ], 200);
+    }
+
+    public function DeleteFavorit(Request $request){
+        $responseMessage = "Favorit Company unmark successfully";
+        $user = Auth::guard("api")->user();
+        $companyId  = $request->companyId;
+        $favorit    = Favorit::where('company_id',$companyId)->first();
+        $favorit->delete();
+        return response()->json([
+            "success" => true,
+            "message" => $responseMessage
+            ], 200);
+
     }
 }
